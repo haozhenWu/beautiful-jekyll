@@ -1,19 +1,19 @@
 ---
 layout: page
 title: About me
-subtitle: Why you'd want to go on a date with me
+subtitle: All models are wrong, some happened to be useful.
 ---
 
 My name is Haozhen Wu.  
 Student from University of Wisconsin-Madison.  
 
 Major :
- - Statistics
- - Mathematics
- - Computer Science
+- Statistics
+- Mathematics
+- Computer Science
 
 Area of Interest : 
- - Data Science
- - Machine Learning
- - Big Data
- - Magic
+- Data Science
+- Machine Learning
+- Big Data
+- Magic
