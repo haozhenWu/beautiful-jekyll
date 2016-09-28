@@ -1,3 +1,9 @@
+---
+layout: post
+title: CS638 Data Science
+tags: [Data science, machine learning, web crawling]
+---
+
 #####Backgroud
 I am taking Computer Science 638 - Data Science from University of Wisconsin Madison this semester. I will share the course information here including the course project we did. [Course Website](https://sites.google.com/site/anhaidgroup/courses/cs-638-fall-2016)
 
