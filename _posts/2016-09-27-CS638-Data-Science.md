@@ -17,5 +17,6 @@ The project is about crawling data from websites, extracting useful features, jo
 
 #### Detail
 
+
 ##### Stage 1
 We decided to use scrapy and beautiful soup from Python as our primary packages to first collect the data we need. We are interested in movie related websites such as IMDB and Yahoo movive. More detail progress will come soon here. 
