@@ -8,7 +8,6 @@ My name is Haozhen Wu.
 Student from University of Wisconsin-Madison.  
 
 Major :
-
 * Statistics   
 * Mathematics
 * Computer Science
