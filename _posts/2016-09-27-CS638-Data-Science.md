@@ -73,6 +73,7 @@ If you want to quickly understand what is the result of say
 response.css('div.title_wrapper').css('h1::text').extract()[0]
 {% endhighlight %}
 I suggest you run the following code in your terminal, 
+
 ```
 scrapy shell 'http://www.imdb.com/title/tt0111161/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=2398042102&pf_rd_r=0M6MJZ0HKHS1G28630ZJ&pf_rd_s=center-1&pf_rd_t=15506&pf_rd_i=top&ref_=chttp_tt_1'
 ```
