@@ -75,7 +75,6 @@ response.css('div.title_wrapper').css('h1::text').extract()[0]
 I suggest you run the following code in your terminal, 
 ```
 scrapy shell 'http://www.imdb.com/title/tt0111161/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=2398042102&pf_rd_r=0M6MJZ0HKHS1G28630ZJ&pf_rd_s=center-1&pf_rd_t=15506&pf_rd_i=top&ref_=chttp_tt_1'
-
 ```
 this will open an interactive shell with a object named response created by the link you provided. This is what happened internally from the loopeachmovie spider, when it acquire the inidivual movie link and create the associated Response object.
 {% highlight javascript linenos %}
