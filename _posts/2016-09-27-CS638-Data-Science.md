@@ -42,9 +42,9 @@ class Top250_movie(scrapy.Spider):
 			}
 {% endhighlight %}
 
-Now, we have been able to crawl the information from one single page. Wouldn't it be interesting to iteratively go into specific links (eg, each movie link from the Top 250 movie page) and extract information within those pages?
+Now, we have been able to crawl the information from one single page. Wouldn't it be interesting to iteratively go into each specific links (eg, each movie link from the Top 250 movie page) and extract information within those pages?
 
-Below codes create a spider named "loop eachmovie" and used the same method before to get the link of each movie from the starting url "start_urls". For each individual movie link it acquired, it will send a Request using the new link and a callback funtion defined by "parse_movie". "parse_movie" is the structure I defined here to extract the data within each individual movie page. Essentially, for each selectd url, Scrapy will create a Response object and you can extract data you want using Response's methods such as its CSS and Xpath functions.
+Below codes create a spider named "loopeachmovie" and used the same method before to get the link of each movie from the starting url "start_urls". For each individual movie link it acquired, it will send a Request using the new link and a callback funtion defined by "parse_movie". "parse_movie" is the structure I defined here to extract the data within each individual movie page. Essentially, for each selectd url, Scrapy will create a Response object and you can extract data you want using Response's methods such as its CSS and Xpath functions.
 
 {% highlight javascript linenos %}
 import scrapy
@@ -67,3 +67,20 @@ class loopeachmovieSpider(scrapy.Spider):
 		'length' :response.css('div.title_wrapper').css('div.subtext').css('time::text').extract() 
 		}
 {% endhighlight %}
+
+If you want to quickly understand what is the result of say 
+{% highlight javascript linenos %}
+response.css('div.title_wrapper').css('h1::text').extract()[0]
+{% endhighlight %}
+I suggest you run the following code in your terminal, 
+```
+scrapy shell 'http://www.imdb.com/title/tt0111161/?pf_rd_m=A2FGELUUNOQJNL&pf_rd_p=2398042102&pf_rd_r=0M6MJZ0HKHS1G28630ZJ&pf_rd_s=center-1&pf_rd_t=15506&pf_rd_i=top&ref_=chttp_tt_1'
+
+```
+this will open an interactive shell with a object named response created by the link you provided. This is what happened internally from the loopeachmovie spider, when it acquire the inidivual movie link and create the associated Response object.
+{% highlight javascript linenos %}
+response.css('div.title_wrapper').css('h1::text').extract()[0] # this returns the name of the movie
+response.css('div.title_wrapper').css('span a::text').extract() # year of movie
+response.css('div.title_wrapper').css('div.subtext').css('time::text').extract() # length of the movie
+{% endhighlight %}
+You can go to link's source page and extract other data you want following the same template. 
