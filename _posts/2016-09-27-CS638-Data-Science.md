@@ -21,7 +21,7 @@ The project is about crawling data from websites, extracting useful features, jo
 ##### Stage 1
 We decided to use scrapy and beautiful soup from Python as our primary packages to first collect the data we need. We are interested in movie related websites such as IMDB and Yahoo movie. 
 
-###### Group meeting Oct 01 :  
+##### Group meeting Oct 01 :  
 I created two spiders using Scrapy. First one named "top250_movie". This spider will go to the page [Top 250 rated movies from IMDB](http://www.imdb.com/chart/top?ref_=nv_mv_250_6) and extract information related to individual Url, Name and Year of each movie. Note: In order for you to successfully rerun the code, I expect you have already run throught the basic tutorial provided by [Scrapy](https://doc.scrapy.org/en/latest/intro/tutorial.html)
 
 Below code defines a spider named "top250_movie", the starting url is "start_urls" and for each part of the page that satisfy the structure I defined, extracts the data that is related to "url", "name" and "year".  
@@ -86,9 +86,10 @@ response.css('div.title_wrapper').css('div.subtext').css('time::text').extract()
 You can go to link's source page and extract other data you want following the same template.
 
 
-###### Group meeting Oct 09 :
+##### Group meeting Oct 09 :
 Now, We want to crawl a large amount of movies' information from two different movie websites. I am responsible for crawling 8000 movies from IMDB. The first problem that came into my mind is how can I get the links for those 8000 movies? Based on some initial exploration, IMDB does not provide a simple page listing all the movies in the histroy. Luckily, I found a [post](http://www.imdb.com/list/ls057823854/?start=001&view=detail&sort=listorian:asc) provided by a user in IMDB. As you can see from the post, it provides links to individual movie all the way back to 1972. Nice surprise ha? Each page of the post contains 100 movies. What I need to do next is figure out a way to automatically go to next page. One simple way I came up with was by observing the page url.  
-http://www.imdb.com/list/ls057823854/?start=001&view=detail&sort=listorian:asc
+http://www.imdb.com/list/ls057823854/?start=001&view=detail&sort=listorian:asc  
+
 You can easily find out the pattern, which is in "?start=???". Thus, what I need to do in python is that I just need to create a list, containing all the url from start=001 to start=7900 and then assign them to start_urls.  Following this setup, the spider is able to iteratively loop through each page, collect the 100 movies link, go into each link and crawl the required data.  
 {% highlight javascript linenos %}
 index = range(1,8000,100)
@@ -128,8 +129,8 @@ class loopeachmovieSpider(scrapy.Spider):
 	start_urls = list()
 	for page in index:
     		start_urls.append('http://www.imdb.com/list/ls057823854/?start=' + str(page) + '&view=detail&sort=listorian:asc')
- 	def parse(self,response):
-	 
+
+	def parse(self,response):	 
 	    # follow links to each movie page from top250 rated movie
 	    for href in response.css('div.info').css('b a::attr(href)').extract():
 		page = urllib2.urlopen('http://www.imdb.com/' + href)
@@ -140,8 +141,7 @@ class loopeachmovieSpider(scrapy.Spider):
         
 		yield scrapy.Request(response.urljoin(href),
 				     callback = self.parse_movie)
-
-
+				     
 	def parse_movie(self,response):
              yield {
 		'name' : response.css('div.title_wrapper').css('h1::text').extract()[0],
@@ -152,8 +152,6 @@ class loopeachmovieSpider(scrapy.Spider):
         	'stars':response.css('div.credit_summary_item')[2].css('span a span::text').extract(),
         	'genre':response.css('div.subtext')[0].css('a[href*=genre] span::text').extract(),
         	'Description':response.css('div.plot_summary').css('div.summary_text').css('div::text').extract()
-
 		}
 {% endhighlight %}
 
-What is next ? We might experiment using the regular expression and allow the spider not simply go into one next page. Instead, go into all the pages you can as long as it satisfied the format we defined.
