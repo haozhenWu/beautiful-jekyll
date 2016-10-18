@@ -19,9 +19,9 @@ The project is about crawling data from websites, extracting useful features, jo
 
 
 ##### Stage 1
-We decided to use scrapy and beautiful soup from Python as our primary packages to first collect the data we need. We are interested in movie related websites such as IMDB and Yahoo movive. 
+We decided to use scrapy and beautiful soup from Python as our primary packages to first collect the data we need. We are interested in movie related websites such as IMDB and Yahoo movie. 
 
-Group meeting Oct 01 :  
+###### Group meeting Oct 01 :  
 I created two spiders using Scrapy. First one named "top250_movie". This spider will go to the page [Top 250 rated movies from IMDB](http://www.imdb.com/chart/top?ref_=nv_mv_250_6) and extract information related to individual Url, Name and Year of each movie. Note: In order for you to successfully rerun the code, I expect you have already run throught the basic tutorial provided by [Scrapy](https://doc.scrapy.org/en/latest/intro/tutorial.html)
 
 Below code defines a spider named "top250_movie", the starting url is "start_urls" and for each part of the page that satisfy the structure I defined, extracts the data that is related to "url", "name" and "year".  
@@ -84,5 +84,76 @@ response.css('div.title_wrapper').css('span a::text').extract() # year of movie
 response.css('div.title_wrapper').css('div.subtext').css('time::text').extract() # length of the movie
 {% endhighlight %}
 You can go to link's source page and extract other data you want following the same template.
+
+
+###### Group meeting Oct 09 :
+Now, We want to crawl a large amount of movies' information from two different movie websites. I am responsible for crawling 8000 movies from IMDB. The first problem that came into my mind is how can I get the links for those 8000 movies? Based on some initial exploration, IMDB does not provide a simple page listing all the movies in the histroy. Luckily, I found a [post](http://www.imdb.com/list/ls057823854/?start=001&view=detail&sort=listorian:asc) provided by a user in IMDB. As you can see from the post, it provides links to individual movie all the way back to 1972. Nice surprise ha? Each page of the post contains 100 movies. What I need to do next is figure out a way to automatically go to next page. One simple way I came up with was by observing the page url.  
+http://www.imdb.com/list/ls057823854/?start=001&view=detail&sort=listorian:asc
+You can easily find out the pattern, which is in "?start=???". Thus, what I need to do in python is that I just need to create a list, containing all the url from start=001 to start=7900 and then assign them to start_urls.  Following this setup, the spider is able to iteratively loop through each page, collect the 100 movies link, go into each link and crawl the required data.  
+{% highlight javascript linenos %}
+index = range(1,8000,100)
+start_urls = list()
+for page in index:
+    	start_urls.append('http://www.imdb.com/list/ls057823854/?start=' + str(page) + '&view=detail&sort=listorian:asc')
+{% endhighlight %}
+One might ask why you don't use other Scrapy functionality such as the CrawlSpider, Rule, and LinkExtractor, so that you do not need to preprovide the required links. Instead, you can let the spider to extract the link based on some regular expressions ? The answer is Yes, this is definitely the right way to go and is something I will try in the future.  
+Different from previous procedures, this time I also want to store the html page of each movie I crawled. Therefore, I add a several lines of code in the spider, which use another python package Urllib2. 
+{% highlight javascript linenos %}
+def parse(self,response):
+	 
+	    # follow links to each movie page from top250 rated movie
+	    for href in response.css('div.info').css('b a::attr(href)').extract():
+		# Use urllib2.urlopen to open and read each movie's page
+		page = urllib2.urlopen('http://www.imdb.com/' + href)
+		page_content = page.read()
+		# Define unqiue name for each page based on the uniqe letter from movie url
+		unique_name = "html_pages/" + href.split("/")[2] + ".html"
+		# Open a html file on local disk and write the html page out.
+		with open(unique_name, 'w') as page:
+		     page.write(page_content)
+        
+		yield scrapy.Request(response.urljoin(href),
+				     callback = self.parse_movie)
+{% endhighlight %}
+
+After add in all the data I want from each movie page, I finally have the following spider.
+{% highlight javascript linenos %}
+import scrapy
+import urllib2
+import os
+class loopeachmovieSpider(scrapy.Spider):
+	name = 'allmovie_IMDB'
+
+	index = range(1,8000,100)
+	start_urls = list()
+	for page in index:
+    		start_urls.append('http://www.imdb.com/list/ls057823854/?start=' + str(page) + '&view=detail&sort=listorian:asc')
+ 	def parse(self,response):
+	 
+	    # follow links to each movie page from top250 rated movie
+	    for href in response.css('div.info').css('b a::attr(href)').extract():
+		page = urllib2.urlopen('http://www.imdb.com/' + href)
+		page_content = page.read()
+		unique_name = "html_pages/" + href.split("/")[2] + ".html"
+		with open(unique_name, 'w') as page:
+		     page.write(page_content)
+        
+		yield scrapy.Request(response.urljoin(href),
+				     callback = self.parse_movie)
+
+
+	def parse_movie(self,response):
+             yield {
+		'name' : response.css('div.title_wrapper').css('h1::text').extract()[0],
+		'year' : response.css('div.title_wrapper').css('span a::text').extract(),
+		'length' :response.css('div.title_wrapper').css('div.subtext').css('time::text').extract(),
+        	'director':response.css('div.credit_summary_item')[0].css('a span::text').extract(),
+        	'writers':response.css('div.credit_summary_item')[1].css('span a span::text').extract(),
+        	'stars':response.css('div.credit_summary_item')[2].css('span a span::text').extract(),
+        	'genre':response.css('div.subtext')[0].css('a[href*=genre] span::text').extract(),
+        	'Description':response.css('div.plot_summary').css('div.summary_text').css('div::text').extract()
+
+		}
+{% endhighlight %}
 
 What is next ? We might experiment using the regular expression and allow the spider not simply go into one next page. Instead, go into all the pages you can as long as it satisfied the format we defined.
