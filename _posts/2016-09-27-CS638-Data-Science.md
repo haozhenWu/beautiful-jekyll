@@ -104,7 +104,7 @@ def parse(self,response):
 	 
 	    # follow links to each movie page from top250 rated movie
 	    for href in response.css('div.info').css('b a::attr(href)').extract():
-		# Use urllib2.urlopen to open and read each movie's page
+		# Use urllib2.urlopen to open and read each movie page
 		page = urllib2.urlopen('http://www.imdb.com/' + href)
 		page_content = page.read()
 		# Define unqiue name for each page based on the uniqe letter from movie url
