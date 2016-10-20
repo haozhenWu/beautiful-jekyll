@@ -12,7 +12,7 @@ The project is about crawling data from websites, extracting useful features, jo
 
 * Stage 0: Form a team. Due Tue Sept 20
 * Stage 1: Crawl and extract to obtain two tables, three weeks, due Tue Oct 11
-
+* Stage 2: Explore, understand, clean, transform the two tables
 
 
 #### Detail
@@ -155,3 +155,14 @@ class loopeachmovieSpider(scrapy.Spider):
 		}
 {% endhighlight %}
 
+My teammate also crawl 6000 movie information from Rotten Tomato, which primarily use urllib. The structure and idea is basically the same. You can have a [look](https://github.com/yaluai/Scrapy_Rotten_tomatoes/blob/master/main.py) if you want.
+
+Now, we have movie information from two websites and is time to go to next stage where we will perform some data exploration, cleaning, understanding and transforming. Below are the table we have.
+
+[IMDB movie 8000 html](https://drive.google.com/file/d/0B93R4jyn0EfRRDREU3prVlpXVjg/view)
+[IMDB movie 8000 csv](https://drive.google.com/file/d/0B93R4jyn0EfRdDNvVC1YMkF5aU0/view)
+[Rotten Tomato 6000 html](https://drive.google.com/open?id=0B-LRCz94qwYEbDhTS2VQeHh5OG8)
+[Rotten Tomato 6000 csv](https://drive.google.com/open?id=0B-LRCz94qwYEbGJIUnExUjJ1Qnc)
+
+##### Stage 2
+Coming next...
