@@ -181,5 +181,5 @@ Stage4: [sample, label, find the best matcher, apply](https://sites.google.com/s
 
 Stage5: [merge the data and perform some analysis](https://sites.google.com/site/anhaidgroup/courses/cs-638-fall-2016/project/stage-5)
 
-* Anomaly detection and k-means [Jypyter Notebook](https://drive.google.com/open?id=0B93R4jyn0EfRRUtaeTBFQVFZWWs)
+* Anomaly detection and k-means: [Jypyter Notebook](https://drive.google.com/open?id=0B93R4jyn0EfRRUtaeTBFQVFZWWs)
 
